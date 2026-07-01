@@ -10,6 +10,7 @@ async function main(): Promise<void> {
   const response: GenerateContentResponse = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: "Explain Node.js in one paragraph",
+
   });
 
   console.log("text response:", response.text);
@@ -23,4 +24,7 @@ function encodePrompt(prompt: string): void {
   console.log("Number of tokens:", encoded.length); // Number of tokens: 6
 }
 
-encodePrompt("Explain Node.js in one paragraph");
+// encodePrompt("Explain Node.js in one paragraph");
+main().catch((error) => {
+  console.error("Error:", error);
+});
