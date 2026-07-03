@@ -9,7 +9,7 @@ const MAX_TOKENS = 700;
 
 // Create a chat session
 const chat = ai.chats.create({
-  model: "gemini-2.0-flash",
+  model: "gemini-2.5-flash",
   config: {
     systemInstruction: "You are a helpful chatbot.",
   },
@@ -34,6 +34,7 @@ process.stdin.addListener("data", async (data) => {
 
     if(response.usageMetadata?.totalTokenCount && response.usageMetadata.totalTokenCount > MAX_TOKENS) {
       console.warn("⚠️  Token limit exceeded!");
+      return;
     }
 
     console.log(`🤖 ${response.text}\n`);
