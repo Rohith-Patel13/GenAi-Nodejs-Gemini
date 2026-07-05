@@ -1,46 +1,49 @@
 import "dotenv/config";
-import { GenerateContentResponse, GoogleGenAI } from "@google/genai";
+import { Chat, Content, GenerateContentResponse, GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
 });
 
-const MAX_TOKENS = 700;
+const MAX_CONTEXT_TOKENS = 700;
 const MODEL = "gemini-2.5-flash";
 const SYSTEM_INSTRUCTION = "You are a helpful chatbot.";
 
 // Create a chat session
-let chat = ai.chats.create({
+let chat: Chat = ai.chats.create({
   model: MODEL,
   config: {
     systemInstruction: SYSTEM_INSTRUCTION,
   },
 });
 
-// Drops the oldest turns from history until we're back under MAX_TOKENS,
-// then rebuilds the chat session with the trimmed history.
+// Counts tokens for whatever is currently in history — this is the same
+// number that will be sent as the prompt on the *next* turn, so it's the
+// correct thing to compare against MAX_CONTEXT_TOKENS (unlike usageMetadata.totalTokenCount,
+// which also includes thinking/candidate tokens from the last call that never get resent).
+async function getContextLength(history: Content[]) {
+  const { totalTokens } = await ai.models.countTokens({
+    model: MODEL,
+    contents: history,
+  });
+  return totalTokens ?? 0;
+}
+
+// Drops the oldest user+model turn pairs from history until we're back
+// under MAX_CONTEXT_TOKENS, then rebuilds the chat session with the trimmed history.
 async function deleteOlderMessages() {
-  const history = chat.getHistory();
+  const history: Content[] = chat.getHistory();
+  let contextLength = await getContextLength(history);
 
-  while (history.length > 0) {
-    const { totalTokens } = await ai.models.countTokens({
-      model: MODEL,
-      contents: history,
-    });
-    console.log(`Current context length: ${totalTokens}`);
-
-    if (!totalTokens || totalTokens <= MAX_TOKENS) {
-      console.log("Context length is now within limits.");
-      break;
-    }
-
-    console.log("Trimming older messages...");
-    console.log(`history before shift:`, history);
-    history.shift();
-    console.log(`history after shift:`, history);
-    console.log(`Removed oldest message. New context length: ${history.length}`);
+  while (contextLength > MAX_CONTEXT_TOKENS && history.length > 0) {
+    // Remove the oldest turn pair (user + model) together, since history
+    // alternates user/model and removing just one leaves an orphaned turn.
+    history.splice(0, 2);
+    contextLength = await getContextLength(history);
+    console.log(`Removed oldest turn. New context length: ${contextLength}`);
   }
 
+  // Rebuild the chat session with the trimmed history
   chat = ai.chats.create({
     model: MODEL,
     config: {
@@ -69,8 +72,13 @@ process.stdin.addListener("data", async (data) => {
 
     console.log(`🤖 ${response.text}\n`);
 
-    if (response.usageMetadata?.totalTokenCount && response.usageMetadata.totalTokenCount > MAX_TOKENS) {
-      console.warn("⚠️  Token limit exceeded! Trimming older messages...");
+    console.log(`Tokens used this turn (prompt+output+thinking): ${response.usageMetadata?.totalTokenCount}`);
+
+    const contextLength = await getContextLength(chat.getHistory());
+    console.log(`Current context length: ${contextLength}`);
+
+    if (contextLength > MAX_CONTEXT_TOKENS) {
+      console.warn("⚠️  Context length exceeded! Trimming older messages...");
       await deleteOlderMessages();
     }
   } catch (error) {
