@@ -8,7 +8,8 @@ const ai = new GoogleGenAI({
 });
 
 const MODEL = "gemini-2.5-flash";
-const SYSTEM_INSTRUCTION = "You are a helpful chatbot.";
+const SYSTEM_INSTRUCTION =
+  "You are a helpful assistant. You can answer general questions, and you also have tools to find and reserve flights when the user asks about that.";
 
 const getFindFlightDeclaration: FunctionDeclaration = {
   name: "findFlight",
