@@ -1,7 +1,7 @@
 
 
 import "dotenv/config";
-import { Chat, FunctionDeclaration, GenerateContentResponse, GoogleGenAI } from "@google/genai";
+import { Chat, FunctionCall, FunctionDeclaration, GenerateContentResponse, GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
@@ -66,7 +66,12 @@ process.stdin.addListener("data", async (data) => {
         ],
       },
     });
-    console.log(`🤖 ${response.text}\n`);
+
+    const functionCalls: FunctionCall[] | undefined = response.functionCalls;
+    if (!functionCalls || functionCalls.length === 0) {
+      console.log("Gemini answered directly, no tool needed:", response.text);
+      return;
+    }
   } catch (error) {
     console.error(error);
   }
