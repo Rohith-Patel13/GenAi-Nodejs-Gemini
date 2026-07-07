@@ -4,7 +4,7 @@
   "description": "gemini basics",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn src/tools/index.ts",
+    "dev": "ts-node-dev --respawn src/flight-reservation.ts",
     "build": "tsc",
     "start": "node dist/index.js"
   },
