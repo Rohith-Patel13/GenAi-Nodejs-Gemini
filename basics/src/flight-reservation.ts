@@ -8,7 +8,7 @@ const ai = new GoogleGenAI({
 });
 
 const MODEL = "gemini-2.5-flash";
-const SYSTEM_INSTRUCTION = "You are a helpful flight reservation assistant.";
+const SYSTEM_INSTRUCTION = "You are a helpful chatbot.";
 
 const getFindFlightDeclaration: FunctionDeclaration = {
   name: "findFlight",
@@ -72,6 +72,7 @@ process.stdin.addListener("data", async (data) => {
       console.log("Gemini answered directly, no tool needed:", response.text);
       return;
     }
+    console.log("Gemini requested function calls:", functionCalls);
   } catch (error) {
     console.error(error);
   }
