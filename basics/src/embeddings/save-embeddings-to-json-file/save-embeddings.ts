@@ -50,3 +50,8 @@ async function main() {
 main();
 
 
+export { 
+    loadJsonFile,
+    saveDataToJsonFile,
+    generateEmbedding 
+};

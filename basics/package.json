@@ -4,7 +4,7 @@
   "description": "gemini basics",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn src/embeddings/save-embeddings-to-json-file/save-embeddings.ts",
+    "dev": "ts-node-dev --respawn src/embeddings/save-embeddings-to-json-file/similar-calculation.ts",
     "build": "tsc",
     "start": "node dist/index.js"
   },
