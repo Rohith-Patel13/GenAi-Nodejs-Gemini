@@ -10,10 +10,11 @@ async function main() {
 
     const response = await ai.models.embedContent({
         model: 'gemini-embedding-2',
-        contents: 'What is the meaning of life?',
+        contents: ['What is the meaning of life?', 'What is the meaning of existence?'],
     });
 
     console.log(response.embeddings);
 }
 
-main();
+
+main().catch(console.error);
