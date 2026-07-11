@@ -34,7 +34,7 @@ async function generateEmbedding(text: string) {
 
 
 async function main() {
-    const data = await loadJsonFile<string[]>(path.join(__dirname, 'load-data.json'));
+    const data = await loadJsonFile<string[]>(path.join(__dirname, 'load-data-2.json'));
 
     // Pair each input back up with its own embedding, e.g.
     // [{ input: "Dog", embedding: [...] }, { input: "Cat", embedding: [...] }]
@@ -44,7 +44,7 @@ async function main() {
         dataWithEmbeddings.push({ input, embedding });
     }
 
-    await saveDataToJsonFile(path.join(__dirname, 'dataWithEmbeddings.json'), dataWithEmbeddings);
+    await saveDataToJsonFile(path.join(__dirname, 'dataWithEmbeddings-2.json'), dataWithEmbeddings);
 }
 
 main();
