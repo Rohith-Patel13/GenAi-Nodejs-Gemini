@@ -17,7 +17,7 @@ function cosineSimilarity(a: number[], b: number[]) {
 async function main() {
     const dataWithEmbeddings = await loadJsonFile<{ input: string, embedding: number[] }[]>(path.join(__dirname, 'dataWithEmbeddings.json'));
 
-    const userPrompt = "which animal is mostly used as a pet in south india ?";
+    const userPrompt = "which animal is most cute ?";
     
     const generatedEmbeddingForUserPrompt: number[] = await   generateEmbedding(userPrompt);
 
