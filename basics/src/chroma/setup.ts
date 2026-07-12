@@ -13,7 +13,7 @@ async function listCollections() {
 
 async function addDocument() {
     const document = {
-        ids: ["2a3f0374-ae6f-45b6-8d13-ff1dc25671ec"],
+        ids: ["40f1baef-f302-4fb8-bb6a-d7a039c97f89"],
         embeddings: [[0.1, 0.2, 0.3]],
         metadatas: [{ author: "John Doe", category: "example" }],
         documents: ["This is a test doc."],
@@ -23,4 +23,11 @@ async function addDocument() {
     await chromaClientLibrary.addDocument("test-collection", document);
 }
 
-addDocument();
+async function getRecordsByCollection() {
+    const records = await chromaClientLibrary.getRecordsByCollection("test-collection");
+    console.log("Records:", records);
+}
+
+getRecordsByCollection().catch((error) => {
+    console.error("Error:", error);
+});

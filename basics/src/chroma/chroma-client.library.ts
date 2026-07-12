@@ -61,6 +61,21 @@ class ChromaClientLibrary {
       throw error;
     } 
   }
+
+  async getRecordsByCollection(collectionName: string) {
+    try {
+      const collection: Collection = await client.getCollection({ name: collectionName });
+      if (!collection) {
+        throw new Error(`Collection '${collectionName}' does not exist.`);
+      }
+      const records = await collection.get();
+      console.log(`Records retrieved from collection '${collectionName}' successfully.`);
+      return records;
+    } catch (error) {
+      console.error(`Error retrieving records from collection '${collectionName}':`, error);
+      throw error;
+    }
+  }
 }
 
 const chromaClientLibrary = new ChromaClientLibrary();
