@@ -13,11 +13,14 @@ async function listCollections() {
 
 async function addDocument() {
     const document = {
-        ids: ["40f1baef-f302-4fb8-bb6a-d7a039c97f89"],
-        embeddings: [[0.1, 0.2, 0.3]],
-        metadatas: [{ author: "John Doe", category: "example" }],
-        documents: ["This is a test doc."],
-        uris: ["http://example.com/doc1"]
+        ids: ["21445900-e8c6-40a9-af18-2d59d97b216f", "863c58fc-5cf3-4244-b9e8-001d2e6e04de"],
+        embeddings: [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]],
+        metadatas: [
+            { author: "John Doe", category: "example" },
+            { author: "John Doe", category: "example" },
+        ],
+        documents: ["This is a test doc.", "This is another test doc."],
+        uris: ["http://example.com/doc1", "http://example.com/doc2"]
     };
 
     await chromaClientLibrary.addDocument("test-collection", document);
