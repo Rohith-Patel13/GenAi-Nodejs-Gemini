@@ -4,6 +4,12 @@
  * 
  * 1. Start the Chroma server by running the following command in your terminal:
  * @see https://docs.trychroma.com/docs/run-chroma/clients#persistent-client
+ * 
+ * 2. Embedding functions 
+ * @see https://docs.trychroma.com/docs/embeddings/embedding-functions#typescript
+ * 
+ * 3. Google Gemini Embedding Function for Chroma
+ * @see https://www.npmjs.com/package/@chroma-core/google-gemini
  */
 
 /**
@@ -14,15 +20,23 @@
  *  `npm run dev`
  *   
  */
-
+import "dotenv/config";
 import { ChromaClient, Collection, Metadata } from "chromadb";
+import { GoogleGeminiEmbeddingFunction } from '@chroma-core/google-gemini';
+
+// Initialize the embedder
+const embedder = new GoogleGeminiEmbeddingFunction({
+  apiKey: process.env.GEMINI_API_KEY!, // Or set GEMINI_API_KEY env var
+  modelName: 'gemini-embedding-2', // Optional, defaults to latest model
+  taskType: 'RETRIEVAL_DOCUMENT', // Optional
+});
 
 const client = new ChromaClient();
 
 class ChromaClientLibrary {
   async createCollection(collectionName: string) {
     try {
-      const collection: Collection = await client.createCollection({ name: collectionName });
+      const collection: Collection = await client.createCollection({ name: collectionName, embeddingFunction: embedder });
       console.log(`Collection '${collectionName}' created successfully.`);
       return collection;
     } catch (error) {
@@ -68,7 +82,9 @@ class ChromaClientLibrary {
       if (!collection) {
         throw new Error(`Collection '${collectionName}' does not exist.`);
       }
-      const records = await collection.get();
+      const records = await collection.get({
+        include: ["metadatas", "documents", "embeddings", "uris"],
+      });
       console.log(`Records retrieved from collection '${collectionName}' successfully.`);
       return records;
     } catch (error) {
