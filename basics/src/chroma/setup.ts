@@ -23,6 +23,3 @@ async function addDocument() {
     await chromaClientLibrary.addDocument("test-collection", document);
 }
 
-addDocument().catch((error) => {
-    console.error("Error adding document:", error);
-});
