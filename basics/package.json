@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn src/chroma/setup.ts",
-    "chroma": "\"C:\\Users\\Rohith\\AppData\\Roaming\\Python\\Python314\\Scripts\\chroma.exe\" run --path ./chroma-data",
+    "chroma": "\"C:\\Users\\rohit\\AppData\\Roaming\\Python\\Python312\\Scripts\\chroma.exe\" run --path ./chroma-data",
     "build": "tsc",
     "start": "node dist/index.js"
   },
