@@ -26,5 +26,5 @@ function encodePrompt(prompt: string): void {
 
 // encodePrompt("Explain Node.js in one paragraph");
 main().catch((error) => {
-  console.error("Error:", error);
+  console.error("Error", error);
 });
